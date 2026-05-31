@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import finbGif from "../../assets/finb.gif";
-import { LayoutDashboard, PiggyBank, ArrowLeftRight, BarChart2, Settings } from "lucide-react";
+import { LayoutDashboard, PiggyBank, ArrowLeftRight, BarChart2, Settings, Target} from "lucide-react";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -9,6 +9,7 @@ export default function Sidebar() {
   const links = [
     { name: "Home", to: "/", icon: LayoutDashboard },
     { name: "Budgets", to: "/budgets", icon: PiggyBank },
+    { name: "Goals", to: "/goals", icon: Target },
     { name: "Transactions", to: "/transaction", icon: ArrowLeftRight },
     { name: "Insights", to: "/insights", icon: BarChart2 },
     { name: "Settings", to: "/settings", icon: Settings },
