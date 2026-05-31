@@ -162,7 +162,7 @@ export default function Settings() {
       Amount: transactionType === "expense"
         ? -Math.abs(Number(manualTransaction.Amount))
         : Math.abs(Number(manualTransaction.Amount)),
-      Category: manualTransaction.category,
+      category: manualTransaction.Category,
       Currency: currency,
     };
 
