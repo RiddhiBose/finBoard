@@ -1,22 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const DEFAULT_STORAGE_KEY = 'transactions';
 
 function readStoredTransactions(storageKey) {
 	if (typeof window === 'undefined') {
-		return [];
+		return { transactions: [], error: null, hasStoredValue: false };
+	}
+
+	const storedValue = window.localStorage.getItem(storageKey);
+
+	if (storedValue === null) {
+		return { transactions: [], error: null, hasStoredValue: false };
 	}
 
 	try {
-		const storedValue = window.localStorage.getItem(storageKey);
-		if (!storedValue) {
-			return [];
+		const parsedValue = JSON.parse(storedValue);
+
+		if (!Array.isArray(parsedValue)) {
+			throw new Error('Stored transactions must be an array');
 		}
 
-		const parsedValue = JSON.parse(storedValue);
-		return Array.isArray(parsedValue) ? parsedValue : [];
-	} catch {
-		return [];
+		return { transactions: parsedValue, error: null, hasStoredValue: true };
+	} catch (error) {
+		return {
+			transactions: [],
+			error: error instanceof Error ? error : new Error('Failed to read stored transactions'),
+			hasStoredValue: true,
+		};
 	}
 }
 
@@ -26,19 +36,63 @@ export default function useTransactions(options = {}) {
 		initialTransactions = [],
 		persist = true,
 	} = options;
+	const [state, setState] = useState(() => {
+		const baseState = {
+			transactions: initialTransactions,
+			loading: false,
+			error: null,
+		};
 
-	const [transactions, setTransactions] = useState(() => {
-		const storedTransactions = readStoredTransactions(storageKey);
-		return storedTransactions.length > 0 ? storedTransactions : initialTransactions;
-	});
+		const { transactions: storedTransactions, error: readError, hasStoredValue } =
+			readStoredTransactions(storageKey);
 
-	useEffect(() => {
-		if (!persist || typeof window === 'undefined') {
-			return;
+		if (readError) {
+			return {
+				...baseState,
+				error: readError,
+			};
 		}
 
-		window.localStorage.setItem(storageKey, JSON.stringify(transactions));
-	}, [persist, storageKey, transactions]);
+		return {
+			...baseState,
+			transactions: hasStoredValue ? storedTransactions : initialTransactions,
+		};
+	});
+
+	const persistTransactions = (nextTransactions) => {
+		if (!persist || typeof window === 'undefined') {
+			return null;
+		}
+
+		try {
+			if (nextTransactions.length === 0) {
+				window.localStorage.removeItem(storageKey);
+			} else {
+				window.localStorage.setItem(storageKey, JSON.stringify(nextTransactions));
+			}
+
+			return null;
+		} catch (persistError) {
+			return persistError instanceof Error
+				? persistError
+				: new Error('Failed to persist transactions');
+		}
+	};
+
+	const setTransactions = (valueOrUpdater) => {
+		setState((currentState) => {
+			const nextTransactions =
+				typeof valueOrUpdater === 'function'
+					? valueOrUpdater(currentState.transactions)
+					: valueOrUpdater;
+
+			return {
+				...currentState,
+				transactions: nextTransactions,
+				error: persistTransactions(nextTransactions),
+			};
+		});
+	};
 
 	const addTransaction = (transaction) => {
 		setTransactions((currentTransactions) => [...currentTransactions, transaction]);
@@ -60,18 +114,16 @@ export default function useTransactions(options = {}) {
 
 	const clearTransactions = () => {
 		setTransactions([]);
-
-		if (persist && typeof window !== 'undefined') {
-			window.localStorage.removeItem(storageKey);
-		}
 	};
 
 	return {
-		transactions,
+		transactions: state.transactions,
 		setTransactions,
 		addTransaction,
 		updateTransaction,
 		deleteTransaction,
 		clearTransactions,
+		loading: state.loading,
+		error: state.error,
 	};
 }
