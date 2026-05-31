@@ -29,7 +29,7 @@ export default function Dashboard() {
     Description: "",
     Amount: "",
   });
-
+  const [transactionType, setTransactionType] = React.useState("expense");
   const handleQuickAdd = (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -54,9 +54,11 @@ export default function Dashboard() {
 
     addTransaction({
       Date: form.Date,
-      Description: description,
-      Amount: amount,
-      category: categorize(description),
+      Description: description || form.Description,
+      Amount: transactionType === "expense"
+        ? -Math.abs(Number(amount || form.Amount))
+        : Math.abs(Number(amount || form.Amount)),
+      category: categorize(description || form.Description),
       Currency: currency,
     });
 
@@ -341,11 +343,35 @@ return (
                 value={form.Description}
                 onChange={(e) => setForm({ ...form, Description: e.target.value })}
               />
+              <div className="flex rounded-xl overflow-hidden border border-[#222]">
+                <button
+                  type="button"
+                  onClick={() => setTransactionType("expense")}
+                  className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                    transactionType === "expense"
+                      ? "bg-[#FF6B6B] text-white"
+                      : "bg-[#111] text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Expense
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTransactionType("income")}
+                  className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                    transactionType === "income"
+                      ? "bg-[#00C49F] text-white"
+                      : "bg-[#111] text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Income
+                </button>
+              </div>
               <input
                 type="number"
+                placeholder="e.g., 450"
                 required
                 step="0.01"
-                placeholder="-450 (expense) or 5000 (income)"
                 className="retro-input p-3 w-full"
                 value={form.Amount}
                 onChange={(e) => setForm({ ...form, Amount: e.target.value })}

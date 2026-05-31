@@ -60,7 +60,7 @@ export default function Settings() {
   const [importMode, setImportMode] = useState("replace");
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const [transactionType, setTransactionType] = useState("expense");
   const [manualTransaction, setManualTransaction] = useState({
     Date: format(new Date(), "dd/MM/yyyy"),
     Description: "",
@@ -159,8 +159,10 @@ export default function Settings() {
     const newTransaction = {
       Date: manualTransaction.Date,
       Description: manualTransaction.Description,
-      Amount: manualTransaction.Amount,
-      category: manualTransaction.Category,
+      Amount: transactionType === "expense"
+        ? -Math.abs(Number(manualTransaction.Amount))
+        : Math.abs(Number(manualTransaction.Amount)),
+      Category: manualTransaction.Category,
       Currency: currency,
     };
 
@@ -342,7 +344,37 @@ export default function Settings() {
                 />
               </div>
 
-              {/* AMOUNT — Fix: step="0.01" added back for decimal support */}
+              {/* AMOUNT with Income/Expense toggle */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase text-gray-500">
+                  Type
+                </label>
+                <div className="flex rounded-xl overflow-hidden border border-[#222]">
+                  <button
+                    type="button"
+                    onClick={() => setTransactionType("expense")}
+                    className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                      transactionType === "expense"
+                        ? "bg-[#FF6B6B] text-white"
+                        : "bg-[#111] text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Expense
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTransactionType("income")}
+                    className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                      transactionType === "income"
+                        ? "bg-[#00C49F] text-white"
+                        : "bg-[#111] text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Income
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase text-gray-500">
                   Amount
@@ -351,7 +383,8 @@ export default function Settings() {
                   type="number"
                   required
                   step="0.01"
-                  placeholder="e.g., -450 or 5000"
+                  min="0.01"
+                  placeholder="e.g., 450"
                   value={manualTransaction.Amount}
                   onChange={(e) =>
                     setManualTransaction({
