@@ -94,9 +94,9 @@ export default function Budgets() {
   };
 
   const panelCardClass =
-    "retro-card p-6 h-full flex flex-col animate-in fade-in duration-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(255,107,0,0.12)]";
+    "retro-card p-6 h-full flex flex-col animate-in fade-in duration-500 transition-all duration-300 hover:border-[#FF6B00]/20";
   const budgetCardClass =
-    "retro-card p-6 h-full min-h-[320px] flex flex-col animate-in fade-in duration-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(255,107,0,0.12)]";
+    "retro-card p-6 h-full min-h-[320px] flex flex-col animate-in fade-in duration-500 transition-all duration-300 hover:border-[#FF6B00]/20";
 
   return transactions && categories.length > 0 ? (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -309,7 +309,7 @@ export default function Budgets() {
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
-      <div className="retro-card p-12 flex flex-col items-center max-w-md text-center border-[#FF6B00]/30 shadow-[0_0_20px_rgba(255,107,0,0.1)] animate-in fade-in zoom-in-95 duration-500 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(255,107,0,0.12)]">
+      <div className="retro-card p-12 flex flex-col items-center max-w-md text-center border-[#FF6B6B]/20 animate-in fade-in zoom-in-95 duration-500 transition-all duration-300 hover:border-[#FF6B6B]/28">
         <div className="w-16 h-16 bg-[#FF6B00]/10 flex items-center justify-center rounded-full mb-6 text-[#FF6B00]">
           <svg
             xmlns="http://www.w3.org/2000/svg"

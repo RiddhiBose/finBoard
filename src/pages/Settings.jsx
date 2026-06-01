@@ -9,7 +9,7 @@ import { useModal } from "../context/ModalContext";
 // REUSABLE SECTION COMPONENT
 // =========================
 const Section = ({ title, subtitle, children, right }) => (
-  <div className="w-full rounded-[24px] border border-[#222] bg-[#141414] p-6 md:p-8 transition-all duration-300 hover:border-[#FF6B00]/30 hover:shadow-[0_0_20px_rgba(255,107,0,0.05)]">
+  <div className="w-full rounded-[24px] border border-[#2a2a2a] bg-[#141414] p-6 md:p-8 transition-all duration-300 hover:border-[#FF6B00]/20">
 
     <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 
