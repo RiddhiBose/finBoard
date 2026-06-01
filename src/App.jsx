@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Budgets from "./pages/Budgets";
+import Goals from "./pages/Goals";
 import Settings from "./pages/Settings";
 import Transaction from "./pages/Transaction";
 import InsightsDashboard from "./pages/InsightsDashboard"; 
@@ -57,6 +58,7 @@ export default function App() {
                   <Route path="settings" element={<Settings />} />
                   <Route path="transaction" element={<Transaction />} />
                   <Route path="insights" element={<InsightsDashboard />} />
+                  <Route path="goals" element={<Goals />} />
                 </Route>
               </Routes>
             </BrowserRouter>
