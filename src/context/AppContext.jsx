@@ -67,6 +67,7 @@ export function AppContext({ children }) {
     } catch (e) {
       console.error('Normalization failed', e);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateCurrency = async (selectedCurrency) => {
