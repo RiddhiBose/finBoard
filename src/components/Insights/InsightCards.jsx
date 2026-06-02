@@ -77,6 +77,25 @@ export default function InsightCards({ transactions }) {
     const uniqueMonthsCount = Object.keys(monthlyData).length || 1;
     const avgMonthlyIncome = Math.round(income / uniqueMonthsCount);
 
+    // 5. Month-on-month expense change
+    const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+      return new Date(a) - new Date(b);
+    });
+
+    let monthOnMonthChange = null;
+    let prevMonthLabel = null;
+    if (sortedMonths.length >= 2) {
+      const currentMonth = sortedMonths[sortedMonths.length - 1];
+      const previousMonth = sortedMonths[sortedMonths.length - 2];
+      const currentExpense = monthlyData[currentMonth].expense;
+      const previousExpense = monthlyData[previousMonth].expense;
+      prevMonthLabel = previousMonth;
+
+      if (previousExpense > 0) {
+        monthOnMonthChange = Math.round(((currentExpense - previousExpense) / previousExpense) * 100);
+      }
+    }
+
     return { 
       topCategory, 
       topCatAmt, 
@@ -85,7 +104,9 @@ export default function InsightCards({ transactions }) {
       totalIncome: income, 
       totalExpenses: expenses, 
       mostActiveMonth, 
-      avgMonthlyIncome 
+      avgMonthlyIncome,
+      monthOnMonthChange,
+      prevMonthLabel
     };
   };
 
@@ -106,10 +127,20 @@ export default function InsightCards({ transactions }) {
     },
     {
       title: "MONTH-ON-MONTH EXPENSES",
-      value: "+99%", 
-      subtitle: "Spending rose vs February 2026. Review discretionary categories.",
-      icon: <TrendingUp className="w-5 h-5" style={{ color: theme === 'light' ? '#8B5CF6' : '#F87171' }} />,
-      valueClass: theme === 'light' ? 'text-[var(--color-fin-accent)]' : 'text-red-500'
+      value: metrics.monthOnMonthChange !== null
+        ? `${metrics.monthOnMonthChange > 0 ? "+" : ""}${metrics.monthOnMonthChange}%`
+        : "N/A",
+      subtitle: metrics.monthOnMonthChange !== null
+        ? metrics.monthOnMonthChange > 0
+          ? `Spending rose vs ${metrics.prevMonthLabel}. Review discretionary categories.`
+          : metrics.monthOnMonthChange < 0
+          ? `Spending dropped vs ${metrics.prevMonthLabel}. Great discipline!`
+          : `No change in spending vs ${metrics.prevMonthLabel}.`
+        : "Not enough data to calculate month-on-month change.",
+      icon: <TrendingUp className="w-5 h-5 text-red-400" />,
+      valueClass: metrics.monthOnMonthChange !== null && metrics.monthOnMonthChange > 0
+        ? "text-red-500"
+        : "text-green-500"
     },
     {
       title: "NET SAVINGS THIS MONTH",
