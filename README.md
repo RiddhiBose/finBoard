@@ -87,35 +87,22 @@ Open:
 ```text
 http://localhost:5173
 ```
-## 🔧 Local Development Setup (Supabase)
+## 🔧 Local Development Setup
 
 FinBoard uses Supabase for authentication and data storage.
 
-### 1. Create a Supabase Project
+Before running the application locally, configure your Supabase project and environment variables by following the setup guide:
 
-1. Visit https://supabase.com
-2. Sign in or create a free account.
-3. Click **New Project**.
-4. Enter a project name and database password.
-5. Wait for the project to finish provisioning.
+* [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
 
-### 2. Get Your Supabase Credentials
+If you encounter:
 
-From your Supabase project dashboard:
+```text
+Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY
+```
 
-1. Navigate to **Settings → API**
-2. Copy:
-   - **Project URL**
-   - **anon public key**
+make sure you have completed the Supabase setup steps and created the required `.env` file.
 
-### 3. Configure Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-VITE_SUPABASE_URL=your_project_url
-VITE_SUPABASE_ANON_KEY=your_anon_key
----
 
 ## 🛠 Tech Stack
 
