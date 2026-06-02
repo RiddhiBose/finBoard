@@ -87,8 +87,22 @@ Open:
 ```text
 http://localhost:5173
 ```
+## 🔧 Local Development Setup
 
----
+FinBoard uses Supabase for authentication and data storage.
+
+Before running the application locally, configure your Supabase project and environment variables by following the setup guide:
+
+* [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+
+If you encounter:
+
+```text
+Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY
+```
+
+make sure you have completed the Supabase setup steps and created the required `.env` file.
+
 
 ## 🛠 Tech Stack
 
