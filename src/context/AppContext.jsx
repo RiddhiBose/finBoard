@@ -46,6 +46,12 @@ export function AppContext({ children }) {
   const updateCurrency = async (selectedCurrency) => {
     if (selectedCurrency.code === currency.code) return;
 
+    if (!transactions?.length) {
+      setCurrency(selectedCurrency);
+      localStorage.setItem('currency', JSON.stringify(selectedCurrency));
+      return;
+    }
+
     const confirmed = window.confirm(
       `Convert all transactions from ${currency.code} to ${selectedCurrency.code}?`
     );
@@ -64,13 +70,17 @@ export function AppContext({ children }) {
 
       const enrichedCurrency = {
         ...selectedCurrency,
-        symbol: currencySymbols[selectedCurrency.code] || selectedCurrency.symbol,
+        symbol: selectedCurrency.symbol || currencySymbols[selectedCurrency.code] || selectedCurrency.code,
       };
 
-      const convertedTransactions = transactions.map((t) => ({
-        ...t,
-        Amount: (Number(t.Amount) * rate).toFixed(2),
-      }));
+      const convertedTransactions = transactions.map((t) => {
+        const parsed = Number(t.Amount);
+        return {
+          ...t,
+          Amount: isNaN(parsed) ? t.Amount : (parsed * rate).toFixed(2),
+          Currency: enrichedCurrency,
+        };
+      });
 
       setTransactions(convertedTransactions);
       localStorage.setItem('transactions', JSON.stringify(convertedTransactions));
@@ -86,12 +96,6 @@ export function AppContext({ children }) {
 
   const deleteTransaction = (index) => {
     const updated = transactions.filter((_, i) => i !== index);
-    setTransactions(updated);
-    localStorage.setItem('transactions', JSON.stringify(updated));
-  };
-
-  const addTransaction = (newTransaction) => {
-    const updated = [...(transactions || []), newTransaction];
     setTransactions(updated);
     localStorage.setItem('transactions', JSON.stringify(updated));
   };
@@ -119,7 +123,11 @@ export function AppContext({ children }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 9999,
         }}>
-          <div style={{ color: '#FF6B00', fontSize: '1.2rem', fontWeight: 'bold' }}>
+          <div
+            role="status"
+            aria-live="assertive"
+            style={{ color: '#FF6B00', fontSize: '1.2rem', fontWeight: 'bold' }}
+          >
             Converting transactions... please wait
           </div>
         </div>
