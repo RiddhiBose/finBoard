@@ -29,7 +29,7 @@ export default function Goals() {
         .from('goals')
         .select('*')
         .eq('user_id', user.id);
-        
+
       if (data && !error) {
         setGoals(data);
       }
@@ -45,7 +45,7 @@ export default function Goals() {
     if (!transactions || transactions.length === 0) return 0;
     const months = {};
     transactions.forEach((t) => {
-      const [day, month, year] = (t.Date || t.date).split("/");
+      const [, month, year] = (t.Date || t.date).split("/");
       const key = `${year}-${month}`;
       months[key] = (months[key] || 0) + Number(t.Amount);
     });
@@ -260,9 +260,8 @@ export default function Goals() {
                   </div>
                   <div className="w-full h-3 rounded-full bg-[#222]">
                     <div
-                      className={`h-3 rounded-full transition-all duration-500 ${
-                        isAchieved ? "bg-[#00C49F]" : "bg-[#FF6B00]"
-                      }`}
+                      className={`h-3 rounded-full transition-all duration-500 ${isAchieved ? "bg-[#00C49F]" : "bg-[#FF6B00]"
+                        }`}
                       style={{ width: `${progress}%` }}
                     />
                   </div>

@@ -139,7 +139,7 @@ export function AppContext({ children }) {
     });
 
     if (user) {
-      const { data, error } = await supabase.from('transactions').insert({
+      const { data } = await supabase.from('transactions').insert({
         user_id: user.id,
         date: normalized.Date,
         amount: normalized.Amount,
