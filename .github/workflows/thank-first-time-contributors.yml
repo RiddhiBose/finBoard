@@ -1,4 +1,4 @@
-name: Thank First Time Contributors
+name: Thank Contributors
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   thank-contributor:
-    if: github.event.pull_request.merged == true && github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
