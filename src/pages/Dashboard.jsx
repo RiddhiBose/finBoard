@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import React from "react";
+import { useMemo } from "react";
 import { parse, format } from "date-fns";
 import { TrendingUp, TrendingDown, PiggyBank, Plus, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
@@ -79,40 +80,56 @@ export default function Dashboard() {
     ? ["#FF6B00", "#FF8C00", "#FFA500", "#FFB732", "#FFC966", "#FFDB99", "#FFECCC"]
     : ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28DFF", "#FF6B6B", "#82ca9d"];
 
-  const totalIncome = transactions?.reduce((acc, amt) => {
+ const totalIncome = useMemo(() => {
+  return transactions?.reduce((acc, amt) => {
     const num = Number(amt.Amount);
     return num > 0 ? acc + num : acc;
   }, 0);
+}, [transactions]);
 
-  const totalExpense = transactions?.reduce((acc, item) => {
+const totalExpense = useMemo(() => {
+  return transactions?.reduce((acc, item) => {
     const amount = Number(item.Amount);
     return amount < 0 ? acc + amount : acc;
   }, 0);
+}, [transactions]);
+
 
   const savings = totalIncome + totalExpense;
 
-    const categoryData =
-      transactions
-        ?.filter((t) => Number(t.Amount) < 0)
-        .reduce((acc, item) => {
-          const category = item.category || item.Category || categorize(item.Description);
+   const categoryData = useMemo(() => {
+  return (
+    transactions
+      ?.filter((t) => Number(t.Amount) < 0)
+      .reduce((acc, item) => {
+        const category =
+          item.category ||
+          item.Category ||
+          categorize(item.Description);
 
-          acc[category] = (acc[category] || 0) + Math.abs(Number(item.Amount));
+        acc[category] =
+          (acc[category] || 0) +
+          Math.abs(Number(item.Amount));
 
-          return acc;
-        }, {}) || {};
+        return acc;
+      }, {}) || {}
+  );
+}, [transactions]);
 
-  const chartData = Object.entries(categoryData).map(([name, value]) => ({
+  const chartData = useMemo(() => {
+  return Object.entries(categoryData).map(([name, value]) => ({
     name,
     value,
   }));
+}, [categoryData]);
 
   const getMonth = (dateStr) => {
     const date = parse(dateStr, "dd/MM/yyyy", new Date());
     return format(date, "MMM yyyy");
   };
 
-  const monthData = transactions?.reduce((acc, item) => {
+  const monthData = useMemo(() => {
+  return transactions?.reduce((acc, item) => {
     const month = getMonth(item.Date);
 
     if (!acc[month]) {
@@ -133,8 +150,11 @@ export default function Dashboard() {
 
     return acc;
   }, {});
+}, [transactions]); 
 
-  const barData = Object.values(monthData || {});
+const barData = useMemo(() => {
+  return Object.values(monthData || {});
+}, [monthData]);
 
 return (
     <>
