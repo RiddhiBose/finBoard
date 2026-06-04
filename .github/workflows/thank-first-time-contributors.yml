@@ -1,0 +1,32 @@
+name: Thank First Time Contributors
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  thank-contributor:
+    if: github.event.pull_request.merged == true && github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Post thank you comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `Thanks for the contribution @${author} 🎉
+              Feel free to create more issues or work on existing ones anytime.
+
+              And if you liked the project, feel free to star the repo :)`
+            });
