@@ -464,28 +464,30 @@ export default function Settings() {
         </Section>
 
         {/* DANGER ZONE */}
-        <Section 
-          title="Danger Zone" 
-          subtitle="Irreversible destructive actions"
-          icon={AlertTriangle}
-          className="border-[#FF6B6B]/20 hover:border-[#FF6B6B]/40"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
-            <div>
-              <h3 className="font-bold text-red-500 mb-1">Clear All Transactions</h3>
-              <p className="text-xs text-gray-400">Permanently delete all your financial data.</p>
+        {transactions?.length > 0 && (
+          <Section 
+            title="Danger Zone" 
+            subtitle="Irreversible destructive actions"
+            icon={AlertTriangle}
+            className="border-[#FF6B6B]/20 hover:border-[#FF6B6B]/40"
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
+              <div>
+                <h3 className="font-bold text-red-500 mb-1">Clear All Transactions</h3>
+                <p className="text-xs text-gray-400">Permanently delete all your financial data.</p>
+              </div>
+              <button
+                type="button"
+                onClick={clearAllData}
+                className="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 border border-red-500/20 px-6 py-3 text-sm font-black uppercase tracking-wider text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+              >
+                <Trash2 size={16} />
+                Clear Data
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={clearAllData}
-              className="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 border border-red-500/20 px-6 py-3 text-sm font-black uppercase tracking-wider text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-            >
-              <Trash2 size={16} />
-              Clear Data
-            </button>
-          </div>
-        </Section>
-      </div>
+          </Section>
+        )}
+      </div> {/* Grid layout wrapper closes here properly */}
 
       {/* OVERVIEW */}
       {transactions?.length > 0 && (
@@ -493,6 +495,6 @@ export default function Settings() {
           Total Transactions Recorded: <span className="text-[#FF6B00]">{transactions.length}</span>
         </div>
       )}
-    </div>
+    </div> // Main container closes here
   );
 }
