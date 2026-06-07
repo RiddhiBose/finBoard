@@ -1,10 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { DataContext } from "../context/AppContext";
+import { DataContext } from "../context/DataContext";
 import { useModal } from "../context/ModalContext";
 import categorize from "../components/utils/categorize";
 import { parse } from "date-fns";
-import { useState } from "react";
 import { createPortal } from "react-dom";
 
 const categoryIcons = {
